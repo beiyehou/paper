@@ -8,8 +8,15 @@ fluctuate = 0.05;
 
 [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate );
 
+
 M = 3; N = 1; n = 4; 
 
+% 显示垂直维度数据序列组
+figure_7 = figure(7);
+hold on;
+for i=1:1:size(vertical_traffic_data,1)
+    plot(vertical_traffic_data(:,i));
+end
 % 构造小波神经网络节点结构体
 node_number.input = M;
 node_number.hidden = n;
@@ -77,7 +84,13 @@ title('纵向误差的分布','fontsize',12)
  
  %误差
  deviation_x = [(pre_data - output)' , (ynn - output_test)'];
- deviation_y = [line_data - temp_line(1,[M+1:96]) ,line_data - temp_line(2,[M+1:96]) ,line_data - temp_line(3,[M+1:96]) ,(line_data' - output_test)'];
+ deviation_y = [];
+ for i =1:1:horizontal_num_day
+     deviation_y = [deviation_y , line_data - vertical_traffic_data(size(vertical_traffic_data,1)-i+1,[M+1:end])];
+ end
+ deviation_y = [deviation_y,(line_data' - output_test)'];
+%  deviation_y = [line_data - vertical_traffic_data(vertical_num_day-3,[M+1:end]),line_data - vertical_traffic_data(vertical_num_day-2,[M+1:end]) ,line_data - vertical_traffic_data(vertical_num_day-1,[M+1:end]) , ...
+%      line_data - vertical_traffic_data(vertical_num_day,[M+1:end]) ,(line_data' - output_test)'];
  
 %误差预测计算单指数平滑算法参数
 Single_params_x = training_single_smoothing( deviation_x , 0.01 );

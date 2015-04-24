@@ -1,4 +1,4 @@
-function main( Force_train )
+function main( Force_train,Force_ARIMA_train )
 % 清空环境变量
 close all;
 % 网络参数配置
@@ -8,8 +8,14 @@ fluctuate = 0.05;
 
 [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate );
 
+
 M = 3; N = 1; n = 4; 
 
+% 显示垂直维度数据序列组
+figure_7 = figure(7);
+for i=1:1:size(vertical_traffic_data,1)
+    plot();
+end
 % 构造小波神经网络节点结构体
 node_number.input = M;
 node_number.hidden = n;
@@ -25,14 +31,22 @@ output_out_data = data_cut(new_data,1,M);
 output_test = output_out_data.output';
 
 % 训练 arima 模型
+if Force_ARIMA_train
+    Arima_params = train_arima( vertical_traffic_data(:,1) );
+    save('ARIMA_params.mat', 'Arima_params');
+else
+   load ('ARIMA_params.mat' , 'Arima_params') ;
+   disp(['ARIMA 使用保存模型' ]);
+end
 
-Arima_params = train_arima( vertical_traffic_data(:,1) );
+disp(Arima_params);
+
 line_data = zeros(1,length(new_data));
 for i=1:1:length(new_data)
     prediction_temp_data = [vertical_traffic_data(:,i)' new_data(1,i)];
     predicton_out = implement_arima( Arima_params , prediction_temp_data);
     line_data(1,i) = predicton_out(1,end);
-    disp[];
+    disp(['arima:' num2str(i) '次'  '误差：' num2str(line_data(1,i) - new_data(1,i))]);
 end
 % line_data = sum(vertical_traffic_data)/size(vertical_traffic_data,1);
 line_data = line_data(1,node_number.input+1:end);
