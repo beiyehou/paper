@@ -58,10 +58,10 @@ ynn = implement_Wave_nerve(new_data,1,node_number,Wave_params);
 
 figure_2 = figure(2);
 
-plot(ynn,'r*:')
+plot(ynn,'r*-')
 hold on
-% plot(line_data,'k','linewidth',2)
-plot(output_test,'bo--')
+plot(line_data,'k','linewidth',2)
+plot(output_test,'bo-')
 
 
 title('预测 IP 流量','fontsize',12)
@@ -128,7 +128,7 @@ plot(pre_a,'ro-','linewidth',1.5);
 
 %补绘二维预测结果
 figure(figure_2);
-plot(prediction_value_a,'g*:');
+plot(prediction_value_a,'g*-');
 
 %补绘二维预测误差分布
 figure(figure_3);
@@ -155,7 +155,7 @@ value_a = calculate_a(pre_ex,pre_ey);
 prediction_ex_ey = value_a.*ynn' + (1-value_a).*line_data;
 prediction_ex_ey(1,1) = output_test(1,1);
 figure(figure_2);
-plot(prediction_ex_ey,'m*:');
+plot(prediction_ex_ey,'m*-');
 legend('横向预测' , '纵向预测' ,'真实值', '平滑 a 二维预测', '平滑 ex ey 二维预测');
 
 figure(figure_1);
