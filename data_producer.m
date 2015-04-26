@@ -7,13 +7,13 @@ function [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_p
 % new_data                          输出数据，为一天的测试数据
 
 load preducer traffic_data;
-
+deta = 4;
 model_data = traffic_data;
 model_data = dimension_change(model_data,'row');
 model_producer = zeros(vertical_num_day , length(model_data));
 
 for i = 1: 1 : vertical_num_day
-    rand_index = randperm(length(model_data),length(model_data)/4);
+    rand_index = randperm(length(model_data),length(model_data)/deta);
     model_producer(i,:) = model_data;
     model_producer(i,rand_index) = model_data(rand_index) .* (1+rand(1,length(rand_index))*fluctuate*2 - fluctuate);
 end
@@ -25,7 +25,7 @@ end
 
 horizontal_traffic_data = horizontal_data;
 vertical_traffic_data = model_producer(size(model_producer,1):-1:1,:);
-rand_index = randperm(length(model_data),length(model_data)/4);
+rand_index = randperm(length(model_data),length(model_data)/deta);
 new_data = model_data;
 new_data(rand_index) = model_data(rand_index) .* (1+rand(1,length(rand_index))*fluctuate*2 - fluctuate);
 
