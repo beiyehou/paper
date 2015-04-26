@@ -7,7 +7,7 @@ function [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_p
 % new_data                          输出数据，为一天的测试数据
 
 load preducer traffic_data;
-deta = 4;
+deta = 1;
 model_data = traffic_data;
 model_data = dimension_change(model_data,'row');
 model_producer = zeros(vertical_num_day , length(model_data));

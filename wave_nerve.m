@@ -12,7 +12,7 @@ n = node_number.hidden;           %隐形节点个数
 
 lr1=0.01;                   %学习概率
 lr2=0.001;                 %学习概率
-maxgen=800;           %迭代次数
+maxgen=500;           %迭代次数
 
 %权值初始化
 Wjk=randn(n,M);Wjk_1=Wjk;Wjk_2=Wjk_1;
@@ -80,6 +80,7 @@ else
 
             %计算误差和
             error(i)=error(i)+sum(abs(yqw-y));
+%             error(i) = error(i) + std(yqw-y).^2;
 
             %权值调整
             for j=1:n

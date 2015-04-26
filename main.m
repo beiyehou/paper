@@ -3,13 +3,13 @@ function main( Force_train,Force_ARIMA_train )
 close all;
 % 网络参数配置
 vertical_num_day  = 33;
-horizontal_num_day = 4;
-fluctuate = 0.05;
+horizontal_num_day = 3;
+fluctuate = 0.025;
 
 [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate );
 
 
-M = 3; N = 1; n = 4; 
+M = 4; N = 1; n = 4 ;
 
 % 显示垂直维度数据序列组
 figure_7 = figure(7);
@@ -161,7 +161,7 @@ title('平滑 a 预测误差的结果比较图 （左侧一组为 MSE ---- 右侧一组为方差）');
 % 命令窗口打印输出
 fprintf('数据生成器参数: 波动率:%f 横向数据天数:%d 纵向数据天数:%d \n',fluctuate ,horizontal_num_day ,vertical_num_day  );
 fprintf('小波神经网络参数: 输入节点数:%d 隐含层节点数:%d 输出节点数: %d\n',node_number.input , node_number.hidden , node_number.output);
-fprintf('ARIMA 算法模型参数>> \n 差分次数d:%f AR 阶数 p:%f MA 阶数 q:%f\n',Arima_params.I,Arima_params.p,Arima_params.q);
+fprintf('ARIMA 算法模型参数>> \n 差分次数d:%d AR 阶数 p:%d MA 阶数 q:%d\n',Arima_params.I,Arima_params.p,Arima_params.q);
 fprintf('平滑 a 值使用的权值:%f\n',Single_params_a.W);
 fprintf('MSE>>\n 横向预测: %f 纵向预测: %f 二维预测: %f \n',MSE_VAR_array(1,:));
 fprintf('方差>>\n 横向预测: %f 纵向预测: %f 二维预测: %f \n',MSE_VAR_array(2,:));
