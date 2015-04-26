@@ -13,9 +13,8 @@ M = 3; N = 1; n = 4;
 
 % 显示垂直维度数据序列组
 figure_7 = figure(7);
-hold on;
 for i=1:1:size(vertical_traffic_data,1)
-    plot(vertical_traffic_data(:,i));
+    plot();
 end
 % 构造小波神经网络节点结构体
 node_number.input = M;
@@ -33,14 +32,14 @@ output_test = output_out_data.output';
 
 % 训练 arima 模型
 if Force_ARIMA_train
-    Arima_params = train_arima( rebuild_data(vertical_traffic_data));
+    Arima_params = train_arima( vertical_traffic_data(:,1) );
     save('ARIMA_params.mat', 'Arima_params');
 else
    load ('ARIMA_params.mat' , 'Arima_params') ;
    disp(['ARIMA 使用保存模型' ]);
 end
 
-% disp(Arima_params);
+disp(Arima_params);
 
 line_data = zeros(1,length(new_data));
 for i=1:1:length(new_data)
@@ -58,10 +57,10 @@ ynn = implement_Wave_nerve(new_data,1,node_number,Wave_params);
 
 figure_2 = figure(2);
 
-plot(ynn,'r*-')
+plot(ynn,'r*:')
 hold on
-plot(line_data,'k','linewidth',2)
-plot(output_test,'bo-')
+% plot(line_data,'k','linewidth',2)
+plot(output_test,'bo--')
 
 
 title('预测 IP 流量','fontsize',12)
@@ -84,12 +83,7 @@ title('纵向误差的分布','fontsize',12)
  
  %误差
  deviation_x = [(pre_data - output)' , (ynn - output_test)'];
- deviation_y = [];
- for i =1:1:horizontal_num_day
-     deviation_y = [deviation_y , line_data - vertical_traffic_data(size(vertical_traffic_data,1)-i+1,[M+1:end])];
- end
- deviation_y = [deviation_y,(line_data' - output_test)'];
-
+ deviation_y = [line_data - temp_line(1,[M+1:96]) ,line_data - temp_line(2,[M+1:96]) ,line_data - temp_line(3,[M+1:96]) ,(line_data' - output_test)'];
  
 %误差预测计算单指数平滑算法参数
 Single_params_x = training_single_smoothing( deviation_x , 0.01 );
@@ -107,7 +101,8 @@ value_a = calculate_a(deviation_x , deviation_y);
 % 计算 a 值的单指数平滑算法参数
  Single_params_a = training_single_smoothing( value_a(1,1:(end-length(output_test))) , 0.01 );   
 %  Single_params_a.W = 0.4 ;
-
+ disp(node_number);
+ disp(['Single_params_a: ' num2str(Single_params_a.W)]);
  % 用二维预测方法 预测流量值  pre_value = a * xt + (1-a) * yt 
  % 到此有 ynn （一天） 、 line_data （一天） 、 deviation_x （四天）、 deviation_y （四天）
  % 、output_test  真实值。
@@ -126,7 +121,7 @@ plot(pre_a,'ro-','linewidth',1.5);
 
 %补绘二维预测结果
 figure(figure_2);
-plot(prediction_value_a,'g*-');
+plot(prediction_value_a,'g*:');
 
 %补绘二维预测误差分布
 figure(figure_3);
@@ -144,14 +139,8 @@ bar_hander = bar(MSE_VAR_array,'grouped');
 legend(bar_hander,'横向预测','纵向预测','二维预测');
 set(gca,'xticklabel' , {'MSE' ,'方差'},'fontsize' ,12);
 title('平滑 a 预测误差的结果比较图 （左侧一组为 MSE ---- 右侧一组为方差）');
-
-% 命令窗口打印输出
-fprintf('小波神经网络参数: 输入节点数:%f 隐含层节点数:%f ch',node_number);
-fprintf('ARIMA 算法模型参数>> \n 差分次数d:%f AR 阶数 p:%f MA 阶数 q:%f\n',Arima_params.I,Arima_params.p,Arima_params.q);
-fprintf('平滑 a 值使用的权值:%f\n',Single_params_a.W);
 fprintf('MSE>>\n 横向预测: %f 纵向预测: %f 二维预测: %f \n',MSE_VAR_array(1,:));
 fprintf('方差>>\n 横向预测: %f 纵向预测: %f 二维预测: %f \n',MSE_VAR_array(2,:));
-
 %方法二：先求出下一时刻 ex 、 ey 的单指数平滑值，让后用预估的 ex 、 ey 计算 a 值
 pre_ex = implement_Single(Single_params_x,deviation_x(1,end-length(output_test)+1:end));
 pre_ey = implement_Single(Single_params_y,deviation_y(1,end-length(output_test)+1:end));
@@ -159,7 +148,7 @@ value_a = calculate_a(pre_ex,pre_ey);
 prediction_ex_ey = value_a.*ynn' + (1-value_a).*line_data;
 prediction_ex_ey(1,1) = output_test(1,1);
 figure(figure_2);
-plot(prediction_ex_ey,'m*-');
+plot(prediction_ex_ey,'m*:');
 legend('横向预测' , '纵向预测' ,'真实值', '平滑 a 二维预测', '平滑 ex ey 二维预测');
 
 figure(figure_1);

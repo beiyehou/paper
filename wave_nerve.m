@@ -12,7 +12,7 @@ n = node_number.hidden;           %隐形节点个数
 
 lr1=0.01;                   %学习概率
 lr2=0.001;                 %学习概率
-maxgen=800;           %迭代次数
+maxgen=500;           %迭代次数
 
 %权值初始化
 Wjk=randn(n,M);Wjk_1=Wjk;Wjk_2=Wjk_1;
@@ -52,9 +52,9 @@ error=zeros(1,maxgen);
 
 if ~Force_train
    load ('Wave_params.mat' , 'Wjk','a','b','Wij' ,'inputps','outputps') ;
-   disp(['小波使用保存模型' ]);
+   disp(['使用保存模型' ]);
 else
-    disp(['小波使用新的模型']);
+    disp(['使用新的模型']);
     i = 1;
     while (i <= maxgen) 
         if ((i>1) && error(i-1) < 35)
@@ -132,10 +132,9 @@ else
         disp(['训练完成：' num2str(i) '次']);
     end
     %保存模型
-    figure(6);plot(error);
     save('Wave_params.mat', 'Wjk','a','b','Wij','inputps','outputps');
 end
-
+figure(6);plot(error);
 Wave_params.Wjk = Wjk;
 Wave_params.a = a;
 Wave_params.b = b;
