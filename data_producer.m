@@ -6,7 +6,7 @@ function [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_p
 % horizontal_traffic_data     输出数据，为横向维度的一维数据 (1,num_day*24*60/5)
 % new_data                          输出数据，为一天的测试数据
 
-load preducer traffic_data;
+load( 'saved/preducer.mat', 'traffic_data');
 deta = 1;
 model_data = traffic_data;
 model_data = dimension_change(model_data,'row');

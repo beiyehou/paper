@@ -66,8 +66,11 @@ text_show_result.show_global = 'Y';
 text_show_result.show_detail = 'N';
 text_show_result.slider = 0.0;
 handles.show_result = text_show_result;
-
-traffic_data = zeros(1,24*60/5);
+try 
+    load('saved/preducer.mat','traffic_data');
+catch
+    traffic_data = zeros(1,24*60/5);
+end
 handles.traffic_data = traffic_data;
 
 % Update handles structure
@@ -662,6 +665,7 @@ function pushbutton_reset_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_reset (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 draw_figure(hObject,handles);
 
 % --- Executes on button press in pushbutton_exit.
@@ -745,7 +749,12 @@ switch tag_style
         end
     case 'pushbutton'
         if strcmp(tag_string ,'pushbutton_reset')
-            handles.traffic_data = zeros(1,24*60/5);
+            try 
+                load('saved/preducer.mat','traffic_data');
+            catch
+                traffic_data = zeros(1,24*60/5);
+            end
+            handles.traffic_data = traffic_data;
         end
 end
 guidata(hObject, handles);

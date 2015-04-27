@@ -52,9 +52,9 @@ error=zeros(1,maxgen);
 
 if ~Force_train
    load ('Wave_params.mat' , 'Wjk','a','b','Wij' ,'inputps','outputps') ;
-   disp(['使用保存模型' ]);
+   disp(['小波使用保存模型' ]);
 else
-    disp(['使用新的模型']);
+    disp(['小波使用新的模型']);
     i = 1;
     while (i <= maxgen) 
         if ((i>1) && error(i-1) < 35)
@@ -80,6 +80,7 @@ else
 
             %计算误差和
             error(i)=error(i)+sum(abs(yqw-y));
+%             error(i) = error(i) + std(yqw-y).^2;
 
             %权值调整
             for j=1:n
@@ -132,9 +133,10 @@ else
         disp(['训练完成：' num2str(i) '次']);
     end
     %保存模型
-    save('Wave_params.mat', 'Wjk','a','b','Wij','inputps','outputps');
+    figure(6);plot(error);
+    save('sWave_params.mat', 'Wjk','a','b','Wij','inputps','outputps');
 end
-figure(6);plot(error);
+
 Wave_params.Wjk = Wjk;
 Wave_params.a = a;
 Wave_params.b = b;

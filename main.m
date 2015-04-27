@@ -4,12 +4,18 @@ close all;
 % 网络参数配置
 vertical_num_day  = 33;
 horizontal_num_day = 3;
-fluctuate = 0.025;
+fluctuate = 0.02;
 
 [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate );
+if Force_train && Force_ARIMA_train
+    save('saved/producer_data.mat','vertical_traffic_data' , 'horizontal_traffic_data' , 'new_data');
+else
+    load('saved/producer_data.mat','vertical_traffic_data' , 'horizontal_traffic_data' , 'new_data');
+end
 
-
-M = 4; N = 1; n = 4 ;
+M = 3; 
+n = 4 ;
+N = 1; 
 
 % 显示垂直维度数据序列组
 figure_7 = figure(7);
@@ -64,9 +70,9 @@ if Force_ARIMA_train
         temp_line = temp_line(1,node_number.input+1:end);
         pre_vertical_data = [pre_vertical_data temp_line];
     end
-    save('ARIMA_params.mat', 'pre_vertical_data','line_data','Arima_params');
+    save('saved/ARIMA_params.mat', 'pre_vertical_data','line_data','Arima_params');
 else
-    load('ARIMA_params.mat', 'pre_vertical_data','line_data','Arima_params');
+    load('saved/ARIMA_params.mat', 'pre_vertical_data','line_data','Arima_params');
 end
 % 使用神经网路预测
 ynn = implement_Wave_nerve(new_data,1,node_number,Wave_params);

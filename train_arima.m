@@ -26,8 +26,8 @@ temp_data = dimension_change(temp_data , 'col');
 u = iddata(temp_data);
 check = [];
 
-for p = 1:6          
-    for q = 1:6                  
+for p = 1:4          
+    for q = 1:4                  
         m = armax(u,[p q]);        
         AIC = aic(m);              
         check = [check;p q AIC];
