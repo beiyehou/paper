@@ -1,4 +1,4 @@
-function [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate )
+function [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate,deta )
 % 由绘制好的数据为模板，制作 num_day 天的流量数据
 % num_day                           输入数据表示制作多少天的数据
 % fluctuate                            输入数据表示波动相对大小
@@ -7,7 +7,7 @@ function [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_p
 % new_data                          输出数据，为一天的测试数据
 
 load( 'saved/preducer.mat', 'traffic_data');
-deta = 1;
+% deta = 1;
 model_data = traffic_data;
 model_data = dimension_change(model_data,'row');
 model_producer = zeros(vertical_num_day , length(model_data));

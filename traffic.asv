@@ -67,14 +67,14 @@ text_show_result.show_detail = 'N';
 text_show_result.slider = 0.0;
 handles.show_result = text_show_result;
 try 
-    load('saved/preducer.mat','traffic_data','man_data');
+    load('saved/preducer.mat','traffic_data');
 catch
     traffic_data = zeros(1,24*60/5);
-    man_data = [];
 end
 handles.traffic_data = traffic_data;
+man_data = [];
 handles.man_data = man_data;
-handles.man_data_length = size(man_data,1);
+handles.man_data_length = length(man_data);
 % Update handles structure
 guidata(hObject, handles);
 
@@ -685,12 +685,8 @@ function pushbutton_save_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 disp(handles.traffic_data);
 traffic_data = handles.traffic_data;
-man_data = handles.man_data;
-man_data(size(man_data,1)+1,:) = traffic_data;
-handles.man_data = man_data;
-handles.man_data_length = size(man_data,1);
-save('saved/preducer.mat','traffic_data','man_data');
-guidata(hObject, handles);
+man_data handles.man_data
+save('saved/preducer.mat','traffic_data');
 % --- Executes on scroll wheel click while the figure is in focus.
 function global_figure_WindowScrollWheelFcn(hObject, eventdata, handles)
 % hObject    handle to global_figure (see GCBO)
@@ -735,7 +731,7 @@ end
 
 set(handles.text_show_result,'String',['Room:' handles.show_result.room ' | ' 'Show:' 'global-' handles.show_result.show_global  'detail-' handles.show_result.show_detail ' | ' ...
     'Range:' num2str(floor(handles.show_result.range)) '-' num2str(ceil(handles.show_result.range)) ' | ' ...
-    'Slider:' tag_slider ' | '  'Value:'  num2str(handles.show_result.slider) ' | ' '第' num2str(handles.man_data_length) '天']);
+    'Slider:' tag_slider ' | '  'Value:'  num2str(handles.show_result.slider)]);
 
 guidata(hObject, handles);
 
@@ -757,7 +753,7 @@ switch tag_style
     case 'pushbutton'
         if strcmp(tag_string ,'pushbutton_reset')
             try 
-                load('saved/preducer.mat','traffic_data','man_data');
+                load('saved/preducer.mat','traffic_data');
             catch
                 traffic_data = zeros(1,24*60/5);
             end
@@ -768,7 +764,7 @@ guidata(hObject, handles);
 
 axes(handles.axes_figure); 
 % 生成 24 小时制 xlabel
-xlabel_str = {'0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'};    
+xlabel_str = {'0','1','2','3','4','5','6','7','8','9','10','12','13','14','15','16','17','18','19','20','21','22','23','24'};    
 
 area(handles.traffic_data,'FaceColor',[0.0,0.6,0.0]);
 set(handles.axes_figure,'xtick', [1:60/5:24*60/5]);

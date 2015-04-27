@@ -12,7 +12,7 @@ n = node_number.hidden;           %隐形节点个数
 
 lr1=0.01;                   %学习概率
 lr2=0.001;                 %学习概率
-maxgen=1000;           %迭代次数
+maxgen=500;           %迭代次数
 
 %权值初始化
 Wjk=randn(n,M);Wjk_1=Wjk;Wjk_2=Wjk_1;

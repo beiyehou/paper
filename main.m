@@ -4,10 +4,11 @@ close all;
 % 网络参数配置
 vertical_num_day  = 33;
 horizontal_num_day = 3;
-fluctuate = 0.02;
+fluctuate = 0.04;
+deta = 1;
 
-[ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate );
 if Force_train && Force_ARIMA_train
+    [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate ,deta );
     save('saved/producer_data.mat','vertical_traffic_data' , 'horizontal_traffic_data' , 'new_data');
 else
     load('saved/producer_data.mat','vertical_traffic_data' , 'horizontal_traffic_data' , 'new_data');
@@ -125,7 +126,7 @@ value_a = calculate_a(deviation_x , deviation_y);
 
 % 计算 a 值的单指数平滑算法参数
  Single_params_a = training_single_smoothing( value_a(1,1:(end-length(output_test))) , 0.01 );   
-%  Single_params_a.W = 0.4 ;
+ Single_params_a.W = 0.04 ;
 
  % 用二维预测方法 预测流量值  pre_value = a * xt + (1-a) * yt 
  % 到此有 ynn （一天） 、 line_data （一天） 、 deviation_x （四天）、 deviation_y （四天）
@@ -165,7 +166,7 @@ set(gca,'xticklabel' , {'MSE' ,'方差'},'fontsize' ,12);
 title('平滑 a 预测误差的结果比较图 （左侧一组为 MSE ---- 右侧一组为方差）');
 
 % 命令窗口打印输出
-fprintf('数据生成器参数: 波动率:%f 横向数据天数:%d 纵向数据天数:%d \n',fluctuate ,horizontal_num_day ,vertical_num_day  );
+fprintf('数据生成器参数: 波动率:%f 横向数据天数:%d 纵向数据天数:%d 密集度：%d \n',fluctuate ,horizontal_num_day ,vertical_num_day ,deta );
 fprintf('小波神经网络参数: 输入节点数:%d 隐含层节点数:%d 输出节点数: %d\n',node_number.input , node_number.hidden , node_number.output);
 fprintf('ARIMA 算法模型参数>> \n 差分次数d:%d AR 阶数 p:%d MA 阶数 q:%d\n',Arima_params.I,Arima_params.p,Arima_params.q);
 fprintf('平滑 a 值使用的权值:%f\n',Single_params_a.W);
