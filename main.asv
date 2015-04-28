@@ -9,6 +9,10 @@ deta = 1;
 
 if Force_train && Force_ARIMA_train
     [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate ,deta );
+    load('saved/preducer.mat','man_data');
+    vertical_traffic_data = man_data(1:17,:);
+    new_data = man_data(size(man_data,1),:);
+    for i=1:1:horizontal
     save('saved/producer_data.mat','vertical_traffic_data' , 'horizontal_traffic_data' , 'new_data');
 else
     load('saved/producer_data.mat','vertical_traffic_data' , 'horizontal_traffic_data' , 'new_data');
@@ -126,13 +130,14 @@ value_a = calculate_a(deviation_x , deviation_y);
 
 % 计算 a 值的单指数平滑算法参数
  Single_params_a = training_single_smoothing( value_a(1,1:(end-length(output_test))) , 0.01 );   
+%  Single_params_a.W = 0.1 ;
 
  % 用二维预测方法 预测流量值  pre_value = a * xt + (1-a) * yt 
  % 到此有 ynn （一天） 、 line_data （一天） 、 deviation_x （四天）、 deviation_y （四天）
  % 、output_test  真实值。
 
  % 方法一：对 a 使用单指数平滑,计算预测输出
-pre_a = implement_Single(Single_params_a,value_a(1,end-length(output_test)+1:end));
+pre_a = implement_Single(Single_params_a,value_a(1,end-length(output_test)+1:end),node_number.input);
 prediction_value_a = pre_a.*ynn' + (1-pre_a).*line_data;
 prediction_value_a(1,1) = output_test(1,1);
 
@@ -173,8 +178,8 @@ fprintf('MSE>>\n 横向预测: %f 纵向预测: %f 二维预测: %f \n',MSE_VAR_array(1,:));
 fprintf('方差>>\n 横向预测: %f 纵向预测: %f 二维预测: %f \n',MSE_VAR_array(2,:));
 
 %方法二：先求出下一时刻 ex 、 ey 的单指数平滑值，让后用预估的 ex 、 ey 计算 a 值
-pre_ex = implement_Single(Single_params_x,deviation_x(1,end-length(output_test)+1:end));
-pre_ey = implement_Single(Single_params_y,deviation_y(1,end-length(output_test)+1:end));
+pre_ex = implement_Single(Single_params_x,deviation_x(1,end-length(output_test)+1:end),node_number.input);
+pre_ey = implement_Single(Single_params_y,deviation_y(1,end-length(output_test)+1:end),node_number.input);
 value_a = calculate_a(pre_ex,pre_ey);
 prediction_ex_ey = value_a.*ynn' + (1-value_a).*line_data;
 prediction_ex_ey(1,1) = output_test(1,1);

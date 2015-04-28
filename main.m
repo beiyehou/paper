@@ -3,12 +3,20 @@ function main( Force_train,Force_ARIMA_train )
 close all;
 % Õ¯¬Á≤Œ ˝≈‰÷√
 vertical_num_day  = 33;
-horizontal_num_day = 4;
+horizontal_num_day = 3;
 fluctuate = 0.02;
 deta = 1;
 
 if Force_train && Force_ARIMA_train
-    [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate ,deta );
+%     [ vertical_traffic_data , horizontal_traffic_data , new_data ] = data_producer( vertical_num_day , horizontal_num_day, fluctuate ,deta );
+    load('saved/preducer.mat','man_data');
+    vertical_num_day = size(man_data,1) - 1;
+    vertical_traffic_data = man_data(1:(size(man_data,1)-1),:);
+    new_data = man_data(size(man_data,1),:);
+    horizontal_traffic_data = [];
+    for i = horizontal_num_day:-1:1
+        horizontal_traffic_data = [horizontal_traffic_data man_data(size(man_data,1)-i,:)];
+    end
     save('saved/producer_data.mat','vertical_traffic_data' , 'horizontal_traffic_data' , 'new_data');
 else
     load('saved/producer_data.mat','vertical_traffic_data' , 'horizontal_traffic_data' , 'new_data');
