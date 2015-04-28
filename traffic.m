@@ -758,10 +758,12 @@ switch tag_style
         if strcmp(tag_string ,'pushbutton_reset')
             try 
                 load('saved/preducer.mat','traffic_data','man_data');
+                handles.traffic_data = man_data(4,:);
             catch
                 traffic_data = zeros(1,24*60/5);
+                handles.traffic_data = traffic_data;
             end
-            handles.traffic_data = traffic_data;
+            
         end
 end
 guidata(hObject, handles);
