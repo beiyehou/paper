@@ -57,9 +57,9 @@ else
     disp(['小波使用新的模型']);
     i = 1;
     while (i <= maxgen) 
-        if ((i>1) && error(i-1) < 39)
-            break;
-        end
+%         if ((i>1) && error(i-1) < 39)
+%             break;
+%         end
         %误差累计
         error(i)=0;
         % 循环训练
@@ -79,7 +79,7 @@ else
             end
 
             %计算误差和
-            error(i)=error(i)+sum(abs(yqw-y));
+            error(i)=error(i)+sum((yqw-y).^2)/length(yqw);
 %             error(i) = error(i) + std(yqw-y).^2;
 
             %权值调整
