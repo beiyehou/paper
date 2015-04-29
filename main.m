@@ -2,7 +2,7 @@ function main( Force_train,Force_ARIMA_train )
 % 清空环境变量
 close all;
 % 网络参数配置
-vertical_num_day  = 33;
+vertical_num_day  = 0;
 horizontal_num_day = 3;
 fluctuate = 0.02;
 deta = 1;
@@ -20,6 +20,7 @@ if Force_train && Force_ARIMA_train
     save('saved/producer_data.mat','vertical_traffic_data' , 'horizontal_traffic_data' , 'new_data');
 else
     load('saved/producer_data.mat','vertical_traffic_data' , 'horizontal_traffic_data' , 'new_data');
+    vertical_num_day = size(vertical_traffic_data,1);
 end
 
 M = 3; 
@@ -28,10 +29,8 @@ N = 1;
 
 % 显示垂直维度数据序列组
 figure_7 = figure(7);
-hold on;
-for i=1:1:size(vertical_traffic_data,1)
-    plot(vertical_traffic_data(:,i));
-end
+plot(vertical_traffic_data');
+
 % 构造小波神经网络节点结构体
 node_number.input = M;
 node_number.hidden = n;
@@ -87,27 +86,26 @@ end
 ynn = implement_Wave_nerve(new_data,1,node_number,Wave_params);
 
 % 结果分析
-
 figure_2 = figure(2);
 
-plot(ynn,'r*-')
-hold on
-plot(line_data,'k','linewidth',2)
-plot(output_test,'bo-')
+plot(ynn,'r*-');
+hold on;
+plot(line_data,'k','linewidth',2);
+plot(output_test,'bo-');
 
 
-title('预测 IP 流量','fontsize',12)
-xlabel('时间点')
-ylabel(' IP 流量')
+title('预测 IP 流量','fontsize',12);
+xlabel('时间点');
+ylabel(' IP 流量');
 
 
 figure_3 = figure(3);
 subplot(3,2,[1 2]);
 hist(ynn - output_test,[-100:4:100]);
-title('横向预测误差的分布','fontsize',12)
+title('horizontal prediction','fontsize',12);
 subplot(3,2,[3 4]);
 hist(line_data' - output_test,[-100:4:100]);
-title('纵向误差的分布','fontsize',12)
+title('vertical prediction','fontsize',12);
 
 % 首先获得前三天的误差曲线
 
